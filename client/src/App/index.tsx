@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Stack, useTheme } from '@mui/material';
 
 import { useInspectorDrawerOpen, useSamplesDrawerOpen } from '../documents/editor/EditorContext';

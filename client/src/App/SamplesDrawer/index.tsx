@@ -1,5 +1,3 @@
-import React, { useEffect } from 'react';
-
 import { Box, Button, Divider, Drawer, Link, Stack, Typography } from '@mui/material';
 
 import { useSamplesDrawerOpen } from '../../documents/editor/EditorContext';
@@ -7,7 +5,7 @@ import { useSamplesDrawerOpen } from '../../documents/editor/EditorContext';
 import SidebarButton from './SidebarButton';
 import logo from './waypoint.svg';
 import { useTemplateStore } from './hooks';
-
+import { LibraryIcon } from 'lucide-react';
 export const SAMPLES_DRAWER_WIDTH = 240;
 
 export default function SamplesDrawer() {
@@ -25,8 +23,9 @@ export default function SamplesDrawer() {
     >
       <Stack spacing={3} py={1} px={2} width={SAMPLES_DRAWER_WIDTH} justifyContent="space-between" height="100%">
         <Stack spacing={2} sx={{ '& .MuiButtonBase-root': { width: '100%', justifyContent: 'flex-start' } }}>
-          <Typography variant="h6" component="h1" sx={{ p: 0.75 }}>
-            Forge
+          <Typography variant="h6" component="h1" sx={{ p: 0.75 }} style={{ display: 'flex', alignItems: 'center' }}>
+            <LibraryIcon size={24} />
+            <span style={{ marginLeft: '0.25rem' }}>Forge</span>
           </Typography>
 
           <Stack alignItems="flex-start">
