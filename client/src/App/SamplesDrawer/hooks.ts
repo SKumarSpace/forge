@@ -1,29 +1,26 @@
-import { useQuery } from "@tanstack/react-query";
-import { TEditorConfiguration } from "../../documents/editor/core";
+import { useQuery } from '@tanstack/react-query';
+import { TEditorConfiguration } from '../../documents/editor/core';
+import { api } from '../utils';
 
 export function useTemplateStore() {
   const { data: templateNames } = useQuery({
-    queryKey: ["templates"],
-    queryFn: async () => {
-      const response = await fetch('http://localhost:8080/list');
-      return await response.json() as string[];
-    }
-  })
+    queryKey: ['templates'],
+    queryFn: async () => await api.get('list').json<string[]>(),
+  });
 
   return templateNames;
 }
 
 export function useTemplateContent(name: string) {
   const { data: templateContent } = useQuery({
-    queryKey: ["templateContent", name],
+    queryKey: ['templateContent', name],
     queryFn: async () => {
-      const filename = name.replace("#template?name=", "");
-      const response = await fetch('http://localhost:8080/get?filename=' + filename);
-      return await response.json() as TEditorConfiguration;
+      const filename = name.replace('#template?name=', '');
+      return await api.get('get?filename=' + filename).json<TEditorConfiguration>();
     },
-    enabled: name.startsWith("#template") && name.endsWith(".json"),
+    enabled: name.startsWith('#template') && name.endsWith('.json'),
     staleTime: Infinity,
-  })
+  });
 
   return templateContent;
 }

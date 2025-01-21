@@ -13,8 +13,9 @@ import (
 
 // flags
 var (
-	port string
-	url  string
+	port      string
+	url       string
+	proxyAddr string
 )
 
 var rootCmd = &cobra.Command{
@@ -50,12 +51,16 @@ available and what they do.`,
 
 			url = fmt.Sprintf("file://%s", fullUrl)
 		}
-		common.HostServer(port, url)
+		common.HostServer(port, url, proxyAddr)
 	},
 }
 
 func Execute() {
+	// Reverse Proxy to Vite
+	rootCmd.Flags().StringVarP(&proxyAddr, "proxy", "x", "http://localhost:5173", "Proxy address for development mode")
+
 	rootCmd.Flags().StringVarP(&port, "port", "p", "8080", "Port to start the server on")
+
 	rootCmd.Flags().StringVarP(&url, "url", "u", "", "Storage Medium Url")
 	rootCmd.MarkFlagRequired("directory")
 

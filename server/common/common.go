@@ -37,7 +37,7 @@ func withCORS(next http.Handler) http.Handler {
 	})
 }
 
-func HostServer(port string, directory string) {
+func HostServer(port string, directory string, proxyAddr string) {
 	// Open a Blob bucket backed by local file storage.
 	bucket, err := blob.OpenBucket(context.Background(), directory) // Saving to the current directory
 	if err != nil {
@@ -50,8 +50,7 @@ func HostServer(port string, directory string) {
 
 	// Check if in debug mode
 	if os.Getenv("DEBUG") == "true" {
-		// Reverse proxy to localhost:5173
-		proxyURL, _ := url.Parse("http://localhost:5173")
+		proxyURL, _ := url.Parse(proxyAddr)
 		proxy := httputil.NewSingleHostReverseProxy(proxyURL)
 		mux.Handle("/", proxy)
 	} else {
