@@ -21,7 +21,6 @@ export default function EmailLayoutSidebarFields({ data, setData }: EmailLayoutS
 
   const updateData = (d: unknown) => {
     const res = EmailLayoutPropsSchema.safeParse(d);
-    console.log(d, res);
     if (res.success) {
       setData(res.data);
       setErrors(null);
@@ -32,6 +31,12 @@ export default function EmailLayoutSidebarFields({ data, setData }: EmailLayoutS
 
   return (
     <BaseSidebarPanel title="Global">
+      <TextInput
+        label="Title"
+        rows={1}
+        defaultValue={data.title ?? ''}
+        onChange={(title) => updateData({ ...data, title })}
+      />
       <ColorInput
         label="Backdrop color"
         defaultValue={data.backdropColor ?? '#F5F5F5'}

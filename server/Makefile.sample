@@ -1,0 +1,9 @@
+default: local
+
+local:
+	go run . --url=file://../.templates
+
+azure:
+	export AZURE_STORAGE_ACCOUNT="{storage_account}"; \
+	export AZURE_STORAGE_KEY="{storage_key}"; \
+	go run . --url=azblob://{container_name}

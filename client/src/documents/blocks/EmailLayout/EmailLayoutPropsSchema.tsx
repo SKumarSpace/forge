@@ -29,6 +29,7 @@ const EmailLayoutPropsSchema = z.object({
   textColor: COLOR_SCHEMA,
   fontFamily: FONT_FAMILY_SCHEMA,
   childrenIds: z.array(z.string()).optional().nullable(),
+  title: z.string(),
   smsContent: z.string().optional().nullable(),
 });
 

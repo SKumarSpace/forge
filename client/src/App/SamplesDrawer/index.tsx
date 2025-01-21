@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Box, Button, Divider, Drawer, Link, Stack, Typography } from '@mui/material';
 
@@ -6,11 +6,13 @@ import { useSamplesDrawerOpen } from '../../documents/editor/EditorContext';
 
 import SidebarButton from './SidebarButton';
 import logo from './waypoint.svg';
+import { useTemplateStore } from './hooks';
 
 export const SAMPLES_DRAWER_WIDTH = 240;
 
 export default function SamplesDrawer() {
   const samplesDrawerOpen = useSamplesDrawerOpen();
+  const templateNames = useTemplateStore();
 
   return (
     <Drawer
@@ -37,6 +39,9 @@ export default function SamplesDrawer() {
             <SidebarButton href="#sample/reservation-reminder">Reservation reminder</SidebarButton>
             <SidebarButton href="#sample/post-metrics-report">Post metrics</SidebarButton>
             <SidebarButton href="#sample/respond-to-message">Respond to inquiry</SidebarButton>
+            {templateNames && templateNames.map((name) => (
+              <SidebarButton key={name} href={`#template?name=${name}`}>{name}</SidebarButton>
+            ))}
           </Stack>
 
           <Divider />
