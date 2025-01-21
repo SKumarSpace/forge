@@ -8,7 +8,7 @@ Email/Sms/Push Template Manager based off [EmailBuilder.js](https://www.usewaypo
 
 ## Methodology
 Goal is to provide a simple way to manage templates for emails, sms and push notifications. This project should be able to be deployed via `docker`.
-It should support storing and retrieving templates in any storage medium (local, s3 and azure). We will use the `gocloud.dev/blob` library to abstract the storage medium.
+It should support storing and retrieving templates in any storage medium (local, s3 and azure). We will use the [gocloud.dev/blob](gocloud.dev/blob)` library to abstract the storage medium.
 
 ## Usage (Server)
 
@@ -23,7 +23,5 @@ make local
 
 ### Azure Blob Storage
 ```bash
-export AZURE_STORAGE_ACCOUNT="{storage_account}"; \
-export AZURE_STORAGE_KEY="{storage_key}"; \
-go run . --url=azblob://{container_name}
+make azure
 ```
