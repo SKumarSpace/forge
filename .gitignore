@@ -28,3 +28,6 @@ dist-ssr
 
 # Build files
 Makefile
+
+# Env files
+.env

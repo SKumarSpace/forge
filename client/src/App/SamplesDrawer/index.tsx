@@ -26,7 +26,7 @@ export default function SamplesDrawer() {
       <Stack spacing={3} py={1} px={2} width={SAMPLES_DRAWER_WIDTH} justifyContent="space-between" height="100%">
         <Stack spacing={2} sx={{ '& .MuiButtonBase-root': { width: '100%', justifyContent: 'flex-start' } }}>
           <Typography variant="h6" component="h1" sx={{ p: 0.75 }}>
-            EmailBuilder.js
+            Forge
           </Typography>
 
           <Stack alignItems="flex-start">
@@ -39,9 +39,12 @@ export default function SamplesDrawer() {
             <SidebarButton href="#sample/reservation-reminder">Reservation reminder</SidebarButton>
             <SidebarButton href="#sample/post-metrics-report">Post metrics</SidebarButton>
             <SidebarButton href="#sample/respond-to-message">Respond to inquiry</SidebarButton>
-            {templateNames && templateNames.map((name) => (
-              <SidebarButton key={name} href={`#template?name=${name}`}>{name}</SidebarButton>
-            ))}
+            {templateNames &&
+              templateNames.map((name) => (
+                <SidebarButton key={name} href={`#template?name=${name}`}>
+                  {name}
+                </SidebarButton>
+              ))}
           </Stack>
 
           <Divider />

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/skumarspace/forge/common"
@@ -31,6 +32,20 @@ available and what they do.`,
 			if err != nil {
 				fmt.Println("Error getting absolute path:", err)
 				os.Exit(1)
+			}
+
+			// Make directory if it doesn't exist
+			if _, err := os.Stat(fullUrl); os.IsNotExist(err) {
+				err := os.MkdirAll(fullUrl, os.ModePerm)
+				if err != nil {
+					fmt.Println("Error creating directory:", err)
+					os.Exit(1)
+				}
+			}
+
+			// if WINDOWS
+			if runtime.GOOS == "windows" {
+				fullUrl = "/" + strings.ReplaceAll(fullUrl, "\\", "/")
 			}
 
 			url = fmt.Sprintf("file://%s", fullUrl)

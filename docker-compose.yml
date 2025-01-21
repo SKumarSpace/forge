@@ -1,0 +1,8 @@
+services:
+  server:
+    build: .
+    ports:
+      - "9999:8080"
+    env_file:
+      - .env
+    command: ["--url", "file://../.templates"]

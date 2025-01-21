@@ -7,6 +7,9 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"os"
 	"strings"
 
 	"gocloud.dev/blob"
@@ -44,6 +47,16 @@ func HostServer(port string, directory string) {
 
 	// Create a new ServeMux (multiplexer)
 	mux := http.NewServeMux()
+
+	// Check if in debug mode
+	if os.Getenv("DEBUG") == "true" {
+		// Reverse proxy to localhost:5173
+		proxyURL, _ := url.Parse("http://localhost:5173")
+		proxy := httputil.NewSingleHostReverseProxy(proxyURL)
+		mux.Handle("/", proxy)
+	} else {
+		mux.Handle("/", http.FileServer(http.Dir("client/dist")))
+	}
 
 	// Define the save handler
 	mux.HandleFunc("POST /save", func(w http.ResponseWriter, r *http.Request) {

@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "bunx --bun vite",
+    "build": "bunx --bun vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -28,6 +28,7 @@
     "@usewaypoint/document-core": "^0.0.6",
     "@usewaypoint/email-builder": "^0.0.8",
     "highlight.js": "^11.9.0",
+    "ky": "^1.7.4",
     "prettier": "^3.2.5",
     "react": "^18.3.1",
     "react-colorful": "^5.6.1",
