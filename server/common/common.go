@@ -189,6 +189,47 @@ func HostServer(port string, directory string, imageUrl, proxyAddr string) error
 		w.Write(j)
 	})
 
+	mux.HandleFunc("POST /images/upload", func(w http.ResponseWriter, r *http.Request) {
+		// Parse the filename from the URL query parameter
+		filename := r.URL.Query().Get("filename")
+		if filename == "" {
+			http.Error(w, "filename is required", http.StatusBadRequest)
+			return
+		}
+
+		// Parse the multipart form
+		err := r.ParseMultipartForm(10 << 20) // 10 MB
+		if err != nil {
+			http.Error(w, "error parsing form", http.StatusInternalServerError)
+			return
+		}
+
+		// Retrieve the file from form data
+		file, _, err := r.FormFile("file")
+		if err != nil {
+			http.Error(w, "error retrieving file", http.StatusInternalServerError)
+			return
+		}
+		defer file.Close()
+
+		// Read the file content
+		body, err := io.ReadAll(file)
+		if err != nil {
+			http.Error(w, "error reading file", http.StatusInternalServerError)
+			return
+		}
+
+		// Upload the file to the Blob storage
+		err = imageBucket.WriteAll(r.Context(), filename, body, nil)
+		if err != nil {
+			http.Error(w, "error uploading file", http.StatusInternalServerError)
+			return
+		}
+
+		// Respond to the client
+		w.Write([]byte("File uploaded successfully"))
+	})
+
 	// Apply the CORS middleware to all routes
 	http.Handle("/", withCORS(mux))
 

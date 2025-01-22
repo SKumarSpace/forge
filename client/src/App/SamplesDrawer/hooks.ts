@@ -26,7 +26,7 @@ export function useTemplateContent(name: string) {
 }
 
 export function useImageStore() {
-  const { data: images } = useQuery({
+  const { data: images, ...other } = useQuery({
     queryKey: ['templatesj'],
     queryFn: async () =>
       await api.get('images/list').json<{
@@ -34,5 +34,5 @@ export function useImageStore() {
       }>(),
   });
 
-  return images;
+  return { images, ...other };
 }
