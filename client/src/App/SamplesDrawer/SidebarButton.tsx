@@ -9,12 +9,12 @@ import { useTemplateContent } from './hooks';
 export default function SidebarButton({ href, children }: { href: string; children: JSX.Element | string }) {
   const content = useTemplateContent(href);
   const handleClick = () => {
-    if (href.startsWith("#template")) {
+    if (href.startsWith('#template')) {
       if (content) {
         console.log(content);
         resetDocument(content);
       } else {
-        alert("Loading")
+        alert('Loading');
       }
     } else {
       resetDocument(getConfiguration(href));
@@ -23,13 +23,11 @@ export default function SidebarButton({ href, children }: { href: string; childr
 
   // crude auto-load
   useEffect(() => {
-    if (window.location.hash.startsWith("#template") && content) {
+    if (window.location.hash.startsWith('#template') && content) {
       //const filename = window.location.hash.replace("#template?name=", "");
 
       if (decodeURI(window.location.hash) === href) {
-        console.log('Hash:', window.location.hash);
-        console.log('Href:', href);
-        resetDocument(content)
+        resetDocument(content);
       }
     }
   }, [content, href]);

@@ -29,6 +29,19 @@ export default function SamplesDrawer() {
           </Typography>
 
           <Stack alignItems="flex-start">
+            <div
+              style={{
+                fontSize: '0.75rem',
+                color: 'rgba(0, 0, 0, 0.54)',
+                textTransform: 'uppercase',
+                fontWeight: 'bold',
+                letterSpacing: '0.5em',
+                paddingTop: '0.5rem',
+                paddingBottom: '0.5rem',
+              }}
+            >
+              Samples
+            </div>
             <SidebarButton href="#">Empty</SidebarButton>
             <SidebarButton href="#sample/welcome">Welcome email</SidebarButton>
             <SidebarButton href="#sample/one-time-password">One-time passcode (OTP)</SidebarButton>
@@ -38,24 +51,30 @@ export default function SamplesDrawer() {
             <SidebarButton href="#sample/reservation-reminder">Reservation reminder</SidebarButton>
             <SidebarButton href="#sample/post-metrics-report">Post metrics</SidebarButton>
             <SidebarButton href="#sample/respond-to-message">Respond to inquiry</SidebarButton>
+          </Stack>
+          <Divider />
+          <Stack alignItems="flex-start">
+            <div
+              style={{
+                fontSize: '0.75rem',
+                color: 'rgba(0, 0, 0, 0.54)',
+                textTransform: 'uppercase',
+                fontWeight: 'bold',
+                letterSpacing: '0.5em',
+                paddingTop: '0.5rem',
+                paddingBottom: '0.5rem',
+              }}
+            >
+              Templates
+            </div>
             {templateNames &&
               templateNames.map((name) => (
                 <SidebarButton key={name} href={`#template?name=${name}`}>
-                  {name}
+                  {name.replace('.json', '')}
                 </SidebarButton>
               ))}
           </Stack>
-
           <Divider />
-
-          <Stack>
-            <Button size="small" href="https://www.usewaypoint.com/open-source/emailbuilderjs" target="_blank">
-              Learn more
-            </Button>
-            <Button size="small" href="https://github.com/usewaypoint/email-builder-js" target="_blank">
-              View on GitHub
-            </Button>
-          </Stack>
         </Stack>
         <Stack spacing={2} px={0.75} py={3}>
           <Link href="https://usewaypoint.com?utm_source=emailbuilderjs" target="_blank" sx={{ lineHeight: 1 }}>
