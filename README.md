@@ -50,3 +50,9 @@ make local
 ```bash
 make azure
 ```
+
+### S3 or compatible
+
+```bash
+make s3
+```

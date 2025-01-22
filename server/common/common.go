@@ -18,6 +18,7 @@ import (
 
 	_ "gocloud.dev/blob/azureblob" // Import azureblob as a backend for Blob storage
 	_ "gocloud.dev/blob/fileblob"  // Import fileblob as a backend for Blob storage
+	_ "gocloud.dev/blob/s3blob"    // Import s3blob as a backend for Blob storage
 )
 
 // CORS Middleware to handle cross-origin requests
