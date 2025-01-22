@@ -15,6 +15,7 @@ var (
 	url       string
 	imageUrl  string
 	proxyAddr string
+	mode  string
 )
 
 var rootCmd = &cobra.Command{
@@ -65,6 +66,9 @@ func init() {
 
 	rootCmd.Flags().StringVarP(&imageUrl, "imageUrl", "i", "", "Image URL for the email template")
 	rootCmd.MarkFlagRequired("imageUrl")
+
+	rootCmd.Flags().StringVarP(&mode, "mode", "m", "", "Storage provider")
+	rootCmd.MarkFlagRequired("mode")
 }
 
 func Execute() {

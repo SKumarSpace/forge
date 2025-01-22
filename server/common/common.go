@@ -174,9 +174,15 @@ func HostServer(port string, directory string, imageUrl, proxyAddr string) error
 				log.Fatal(err)
 			}
 
-			// HARDCODED for Azure Blob Storage Only
-			azureUrl := fmt.Sprintf("https://%s.blob.core.windows.net/images/%s", os.Getenv("AZURE_STORAGE_ACCOUNT"), obj.Key)
-			filenames[obj.Key] = azureUrl
+			mode := os.Getenv("mode")
+			var url string
+
+			if mode == "azure" {
+				url = fmt.Sprintf("https://%s.blob.core.windows.net/images/%s", os.Getenv("AZURE_STORAGE_ACCOUNT"), obj.Key)
+			} else {
+				url = fmt.Sprintf("https://forge-template-images.s3.us-east-1.amazonaws.com/%s", obj.Key)
+			}
+			filenames[obj.Key] = url
 		}
 
 		// Respond to the client with the list of filenames
