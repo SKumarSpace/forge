@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import {
   VerticalAlignBottomOutlined,
   VerticalAlignCenterOutlined,
   VerticalAlignTopOutlined,
 } from '@mui/icons-material';
-import { Stack, ToggleButton } from '@mui/material';
+import { ImageList, ImageListItem, Stack, ToggleButton } from '@mui/material';
 import { ImageProps, ImagePropsSchema } from '@usewaypoint/block-image';
 
 import BaseSidebarPanel from './helpers/BaseSidebarPanel';
@@ -13,6 +13,7 @@ import RadioGroupInput from './helpers/inputs/RadioGroupInput';
 import TextDimensionInput from './helpers/inputs/TextDimensionInput';
 import TextInput from './helpers/inputs/TextInput';
 import MultiStylePropertyPanel from './helpers/style-inputs/MultiStylePropertyPanel';
+import { useImageStore } from '../../../SamplesDrawer/hooks';
 
 type ImageSidebarPanelProps = {
   data: ImageProps;
@@ -31,6 +32,8 @@ export default function ImageSidebarPanel({ data, setData }: ImageSidebarPanelPr
     }
   };
 
+  const images = useImageStore();
+
   return (
     <BaseSidebarPanel title="Image block">
       <TextInput
@@ -42,6 +45,18 @@ export default function ImageSidebarPanel({ data, setData }: ImageSidebarPanelPr
         }}
       />
 
+      {images && (
+        <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+          {Object.entries(images).map((item) => (
+            <ImageListItem
+              key={item[0]}
+              onClick={() => updateData({ ...data, props: { ...data.props, url: item[1] } })}
+            >
+              <img src={`${item[1]}?w=164&h=164&fit=crop&auto=format`} alt={item[0]} loading="lazy" />
+            </ImageListItem>
+          ))}
+        </ImageList>
+      )}
       <TextInput
         label="Alt text"
         defaultValue={data.props?.alt ?? ''}

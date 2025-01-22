@@ -24,3 +24,15 @@ export function useTemplateContent(name: string) {
 
   return templateContent;
 }
+
+export function useImageStore() {
+  const { data: images } = useQuery({
+    queryKey: ['templatesj'],
+    queryFn: async () =>
+      await api.get('images/list').json<{
+        [key: string]: string;
+      }>(),
+  });
+
+  return images;
+}
