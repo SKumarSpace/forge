@@ -5,4 +5,11 @@ services:
       - "9999:8080"
     env_file:
       - .env
-    command: ["--url", "file://../.templates"]
+    command: ["--url", "file://../.templates", "--imageUrl", "file://../.images"]
+    volumes:
+      - forge-templates:/app/.templates
+      - forge-images:/app/.images
+
+volumes:
+  forge-templates:
+  forge-images:
