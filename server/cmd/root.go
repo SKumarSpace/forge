@@ -3,8 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
-	"runtime"
 	"strings"
 
 	"github.com/skumarspace/forge/common"
@@ -15,6 +13,7 @@ import (
 var (
 	port      string
 	url       string
+	imageUrl  string
 	proxyAddr string
 )
 
@@ -28,42 +27,47 @@ available and what they do.`,
 		// This function will be executed when the root command is called
 		fmt.Println("Welcome to Forge! Use --help for more information.")
 		if strings.HasPrefix(url, "file://") {
-			url = url[7:] // Remove the file:// prefix
-			fullUrl, err := filepath.Abs(url)
+			cleanUrl, err := common.NormalizeLocalURL(url)
 			if err != nil {
-				fmt.Println("Error getting absolute path:", err)
+				fmt.Println("Error normalizing URL:", err)
 				os.Exit(1)
 			}
 
-			// Make directory if it doesn't exist
-			if _, err := os.Stat(fullUrl); os.IsNotExist(err) {
-				err := os.MkdirAll(fullUrl, os.ModePerm)
-				if err != nil {
-					fmt.Println("Error creating directory:", err)
-					os.Exit(1)
-				}
-			}
-
-			// if WINDOWS
-			if runtime.GOOS == "windows" {
-				fullUrl = "/" + strings.ReplaceAll(fullUrl, "\\", "/")
-			}
-
-			url = fmt.Sprintf("file://%s", fullUrl)
+			url = cleanUrl
 		}
-		common.HostServer(port, url, proxyAddr)
+
+		if strings.HasPrefix(imageUrl, "file://") {
+			cleanImageUrl, err := common.NormalizeLocalURL(imageUrl)
+			if err != nil {
+				fmt.Println("Error normalizing Image URL:", err)
+				os.Exit(1)
+			}
+
+			imageUrl = cleanImageUrl
+		}
+
+		err := common.HostServer(port, url, imageUrl, proxyAddr)
+		if err != nil {
+			fmt.Println("Error starting server:", err)
+			os.Exit(1)
+		}
 	},
 }
 
-func Execute() {
+func init() {
 	// Reverse Proxy to Vite
 	rootCmd.Flags().StringVarP(&proxyAddr, "proxy", "x", "http://localhost:5173", "Proxy address for development mode")
 
 	rootCmd.Flags().StringVarP(&port, "port", "p", "8080", "Port to start the server on")
 
 	rootCmd.Flags().StringVarP(&url, "url", "u", "", "Storage Medium Url")
-	rootCmd.MarkFlagRequired("directory")
+	rootCmd.MarkFlagRequired("url")
 
+	rootCmd.Flags().StringVarP(&imageUrl, "imageUrl", "i", "", "Image URL for the email template")
+	rootCmd.MarkFlagRequired("imageUrl")
+}
+
+func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

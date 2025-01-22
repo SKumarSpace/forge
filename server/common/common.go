@@ -10,6 +10,8 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"path/filepath"
+	"runtime"
 	"strings"
 
 	"gocloud.dev/blob"
@@ -37,13 +39,21 @@ func withCORS(next http.Handler) http.Handler {
 	})
 }
 
-func HostServer(port string, directory string, proxyAddr string) {
+func HostServer(port string, directory string, imageUrl, proxyAddr string) error {
 	// Open a Blob bucket backed by local file storage.
 	bucket, err := blob.OpenBucket(context.Background(), directory) // Saving to the current directory
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("failed to open bucket: %w", err)
 	}
 	defer bucket.Close()
+
+	// Open Image bucket
+	imageBucket, err := blob.OpenBucket(context.Background(), imageUrl) // Saving to the current directory
+	if err != nil {
+		return fmt.Errorf("failed to open image bucket: %w", err)
+	}
+
+	defer imageBucket.Close()
 
 	// Create a new ServeMux (multiplexer)
 	mux := http.NewServeMux()
@@ -149,10 +159,63 @@ func HostServer(port string, directory string, proxyAddr string) {
 		io.Copy(w, reader)
 	})
 
+	// IMAGE HANDLERS
+	mux.HandleFunc("GET /images/list", func(w http.ResponseWriter, r *http.Request) {
+		// List all the files in the bucket
+		filenames := make(map[string]string)
+		iter := imageBucket.List(nil)
+		for {
+			obj, err := iter.Next(context.Background())
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			// HARDCODED for Azure Blob Storage Only
+			azureUrl := fmt.Sprintf("https://%s.blob.core.windows.net/images/%s", os.Getenv("AZURE_STORAGE_ACCOUNT"), obj.Key)
+			filenames[obj.Key] = azureUrl
+		}
+
+		// Respond to the client with the list of filenames
+		j, err := json.Marshal(filenames)
+		if err != nil {
+			http.Error(w, "Error encoding JSON", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(j)
+	})
+
 	// Apply the CORS middleware to all routes
 	http.Handle("/", withCORS(mux))
 
 	// Start the HTTP server
 	log.Printf("Server started at http://localhost:%s", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	return http.ListenAndServe(":"+port, nil)
+}
+
+func NormalizeLocalURL(url string) (string, error) {
+	url = url[7:] // Remove the file:// prefix
+	fullUrl, err := filepath.Abs(url)
+	if err != nil {
+		return "", err
+	}
+
+	// Make directory if it doesn't exist
+	if _, err := os.Stat(fullUrl); os.IsNotExist(err) {
+		err := os.MkdirAll(fullUrl, os.ModePerm)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	// Convert Windows path to use forward slashes
+	if runtime.GOOS == "windows" {
+		fullUrl = "/" + strings.ReplaceAll(fullUrl, "\\", "/")
+	}
+
+	return fmt.Sprintf("file://%s", fullUrl), nil
 }
