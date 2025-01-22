@@ -1,16 +1,17 @@
 default: azure
 
 local:
-	export DEBUG=true; go run . --url=file://../.templates --imageUrl=file://../.images
+	export DEBUG=true; go run . --url=file://../.templates --imageUrl=file://../.images --mode=local
 
 azure:
 	export DEBUG=true; \
 	export AZURE_STORAGE_ACCOUNT="{account_name}"; \
 	export AZURE_STORAGE_KEY="{storage_key}" \
-	go run . --url=azblob://test --imageUrl=azblob://images
+	go run . --url=azblob://test --imageUrl=azblob://images --mode=azure
 
 s3:
 	export DEBUG=true; \
 	export AWS_ACCESS_KEY_ID="{access_key_id}"; \
 	export AWS_SECRET_ACCESS_KEY="{secret_access_key}"; \
-	go run . --url=s3://{bucket_name} --imageUrl=s3://{image_bucket-name}
+	export AWS_REGION="{region}"; \
+	go run . --url=s3://{bucket_name} --imageUrl=s3://{image_bucket-name} --mode=s3
