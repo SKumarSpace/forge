@@ -16,6 +16,12 @@ docker run -d -p 9090:8080 -v forge-templates:/app/.templates -v forge-images:/a
 docker run -d -p 9090:8080 -e AZURE_STORAGE_ACCOUNT="<account>" -e AZURE_STORAGE_KEY="<key>" --name forge ghcr.io/skumarspace/forge:main --url=azure://test --imageUrl=azure://images
 ```
 
+## S3 or compatible
+
+```bash
+# TODO
+```
+
 ## Features
 
 - Largely based off the [EmailBuilder.js example self hostable version](https://github.com/usewaypoint/email-builder-js/tree/main/packages/editor-sample).
