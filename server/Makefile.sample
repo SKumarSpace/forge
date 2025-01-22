@@ -1,17 +1,28 @@
 default: azure
 
 local:
-	export DEBUG=true; go run . --url=file://../.templates --imageUrl=file://../.images --mode=local
+	export DEBUG=true; go run . --url=file://../.templates --imageUrl=file://../.images
 
 azure:
 	export DEBUG=true; \
 	export AZURE_STORAGE_ACCOUNT="{account_name}"; \
-	export AZURE_STORAGE_KEY="{storage_key}" \
-	go run . --url=azblob://test --imageUrl=azblob://images --mode=azure
+	export AZURE_STORAGE_KEY="{storage_key}"; \
+	go run . --url=azblob://test --imageUrl=azblob://images
 
 s3:
 	export DEBUG=true; \
 	export AWS_ACCESS_KEY_ID="{access_key_id}"; \
 	export AWS_SECRET_ACCESS_KEY="{secret_access_key}"; \
-	export AWS_REGION="{region}"; \
-	go run . --url=s3://{bucket_name} --imageUrl=s3://{image_bucket-name} --mode=s3
+	export AWS_IMAGE_REGION="{image_region}"; \
+	export AWS_IMAGE_BUCKET="{image_bucket}"; \
+	go run . --url=s3://{templates_bucket} --imageUrl=s3://{image_bucket}
+
+s3-blob-hybrid:
+	export DEBUG=true; \
+	export AWS_ACCESS_KEY_ID="{access_key_id}"; \
+	export AWS_SECRET_ACCESS_KEY="{secret_access_key}"; \
+	export AWS_IMAGE_REGION="{image_region}"; \
+	export AWS_IMAGE_BUCKET="{image_bucket}"; \
+	export AZURE_STORAGE_ACCOUNT="{account_name}"; \
+	export AZURE_STORAGE_KEY="{storage_key}"; \
+	go run . --url=s3://{templates_bucket} --imageUrl=azblob://images

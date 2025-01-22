@@ -40,6 +40,35 @@ func withCORS(next http.Handler) http.Handler {
 	})
 }
 
+func getProviderName(bucketURL string) string {
+	u, err := url.Parse(bucketURL)
+	if err != nil {
+		log.Fatalf("Failed to parse bucket URL: %v", err)
+	}
+	// Extract provider based on the scheme
+	switch strings.ToLower(u.Scheme) {
+	case "s3":
+	case "azblob":
+	case "file":
+		return u.Scheme
+	default:
+		return "Unknown Provider"
+	}
+
+	return u.Scheme
+}
+
+func getPublicBaseUrl(provider, key string) string {
+	switch provider {
+	case "s3":
+		return fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", os.Getenv("AWS_IMAGE_BUCKET"), os.Getenv("AWS_IMAGE_REGION"), key)
+	case "azblob":
+		return fmt.Sprintf("https://%s.blob.core.windows.net/images/%s", os.Getenv("AZURE_STORAGE_ACCOUNT"), key)
+	default:
+		return "Unknown Provider"
+	}
+}
+
 func HostServer(port string, directory string, imageUrl, proxyAddr string) error {
 	// Open a Blob bucket backed by local file storage.
 	bucket, err := blob.OpenBucket(context.Background(), directory) // Saving to the current directory
@@ -55,6 +84,8 @@ func HostServer(port string, directory string, imageUrl, proxyAddr string) error
 	}
 
 	defer imageBucket.Close()
+
+	imageBucketProvider := getProviderName(imageUrl)
 
 	// Create a new ServeMux (multiplexer)
 	mux := http.NewServeMux()
@@ -174,14 +205,7 @@ func HostServer(port string, directory string, imageUrl, proxyAddr string) error
 				log.Fatal(err)
 			}
 
-			mode := os.Getenv("mode")
-			var url string
-
-			if mode == "azure" {
-				url = fmt.Sprintf("https://%s.blob.core.windows.net/images/%s", os.Getenv("AZURE_STORAGE_ACCOUNT"), obj.Key)
-			} else {
-				url = fmt.Sprintf("https://forge-template-images.s3.us-east-1.amazonaws.com/%s", obj.Key)
-			}
+			url := getPublicBaseUrl(imageBucketProvider, obj.Key)
 			filenames[obj.Key] = url
 		}
 
