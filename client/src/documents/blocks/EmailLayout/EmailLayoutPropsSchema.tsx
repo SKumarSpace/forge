@@ -31,6 +31,7 @@ const EmailLayoutPropsSchema = z.object({
   childrenIds: z.array(z.string()).optional().nullable(),
   title: z.string(),
   smsContent: z.string().optional().nullable(),
+  id: z.string(),
 });
 
 export default EmailLayoutPropsSchema;
