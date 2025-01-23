@@ -11,6 +11,7 @@ import ColorInput, { NullableColorInput } from './helpers/inputs/ColorInput';
 import { NullableFontFamily } from './helpers/inputs/FontFamily';
 import SliderInput from './helpers/inputs/SliderInput';
 import TextInput from './helpers/inputs/TextInput';
+import ControlledTextInput from './helpers/inputs/ControlledTextInput';
 
 type EmailLayoutSidebarFieldsProps = {
   data: EmailLayoutProps;
@@ -31,10 +32,10 @@ export default function EmailLayoutSidebarFields({ data, setData }: EmailLayoutS
 
   return (
     <BaseSidebarPanel title="Global">
-      <TextInput
+      <ControlledTextInput
         label="Title"
         rows={1}
-        defaultValue={data.title ?? ''}
+        value={data.title ?? ''}
         onChange={(title) => updateData({ ...data, title })}
       />
       <ColorInput
