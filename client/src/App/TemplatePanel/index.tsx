@@ -21,6 +21,7 @@ import JsonPanel from './JsonPanel';
 import MainTabsGroup from './MainTabsGroup';
 import ShareButton from './ShareButton';
 import SaveToDisk from './SaveToDisk';
+import DeleteFromDisk from './DeleteFromDisk';
 
 export default function TemplatePanel() {
   const document = useDocument();
@@ -99,6 +100,7 @@ export default function TemplatePanel() {
             <DownloadJson />
             <ImportJson />
             <SaveToDisk />
+            <DeleteFromDisk />
             <ToggleButtonGroup value={selectedScreenSize} exclusive size="small" onChange={handleScreenSizeChange}>
               <ToggleButton value="desktop">
                 <Tooltip title="Desktop view">
