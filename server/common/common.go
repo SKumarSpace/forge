@@ -21,6 +21,21 @@ import (
 	_ "gocloud.dev/blob/s3blob"    // Import s3blob as a backend for Blob storage
 )
 
+/*JSON*/
+type EmailLayout struct {
+	Title string `json:"title"`
+	ID    string `json:"id"`
+}
+
+type Root struct {
+	Type string      `json:"type"`
+	Data EmailLayout `json:"data"`
+}
+
+type EmailLayoutRoot struct {
+	Root Root `json:"root"`
+}
+
 // CORS Middleware to handle cross-origin requests
 func withCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -139,7 +154,7 @@ func HostServer(port string, directory string, imageUrl, proxyAddr string) error
 	// Define the list handler
 	mux.HandleFunc("GET /list", func(w http.ResponseWriter, r *http.Request) {
 		// List all the files in the bucket
-		filenames := []string{}
+		filenames := make(map[string]string)
 		iter := bucket.List(nil)
 		for {
 			obj, err := iter.Next(context.Background())
@@ -147,15 +162,32 @@ func HostServer(port string, directory string, imageUrl, proxyAddr string) error
 				break
 			}
 			if err != nil {
-				log.Fatal(err)
+				http.Error(w, "error listing files", http.StatusInternalServerError)
+				return
 			}
 
 			if !strings.HasSuffix(obj.Key, ".json") {
 				continue
 			}
 
-			fmt.Println(obj.Key)
-			filenames = append(filenames, obj.Key)
+			// Read the file from the Blob storage
+			reader, err := bucket.NewReader(r.Context(), obj.Key, nil)
+			if err != nil {
+				http.Error(w, "error reading file", http.StatusInternalServerError)
+				return
+			}
+			defer reader.Close()
+
+			// Deserialize the JSON configuration
+			var config EmailLayoutRoot
+			err = json.NewDecoder(reader).Decode(&config)
+			if err != nil {
+				http.Error(w, "error decoding JSON", http.StatusInternalServerError)
+				return
+			}
+
+			// Add the title to the list of filenames
+			filenames[obj.Key] = config.Root.Data.Title
 		}
 
 		// Respond to the client with the list of filenames
@@ -187,7 +219,7 @@ func HostServer(port string, directory string, imageUrl, proxyAddr string) error
 		defer reader.Close()
 
 		// Write the file content to the response
-		w.Header().Set("Content-Type", "text/html")
+		w.Header().Set("Content-Type", "application/json")
 		io.Copy(w, reader)
 	})
 

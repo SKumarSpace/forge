@@ -10,7 +10,7 @@ export const SAMPLES_DRAWER_WIDTH = 240;
 
 export default function SamplesDrawer() {
   const samplesDrawerOpen = useSamplesDrawerOpen();
-  const templateNames = useTemplateStore();
+  const templates = useTemplateStore();
 
   return (
     <Drawer
@@ -67,10 +67,13 @@ export default function SamplesDrawer() {
             >
               Templates
             </div>
-            {templateNames &&
-              templateNames.map((name) => (
-                <SidebarButton key={name} href={`#template?name=${name}`}>
-                  {name.replace('.json', '')}
+            {templates &&
+              Object.entries(templates).map(([id, title]) => (
+                <SidebarButton key={id} href={`#template?name=${id}`}>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  {title}
+                  <span style={{ fontSize: '0.5rem'}}>{id.replace('.json', '')}</span>
+                  </div>
                 </SidebarButton>
               ))}
           </Stack>

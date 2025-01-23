@@ -6,7 +6,9 @@ import { nanoid } from 'nanoid';
 export function useTemplateStore() {
   const { data: templateNames } = useQuery({
     queryKey: ['templates'],
-    queryFn: async () => await api.get('list').json<string[]>(),
+    queryFn: async () => await api.get('list').json<{
+      [key: string]: string;
+    }>(),
   });
 
   return templateNames;
@@ -14,7 +16,7 @@ export function useTemplateStore() {
 
 export function useNanoid() {
     const templates = useTemplateStore();
-    const nonNullTemplates = templates ?? [];
+    const nonNullTemplates = templates ? Object.keys(templates) : [];
     const generate = () => {
       let uniqueId: string;
       do {
