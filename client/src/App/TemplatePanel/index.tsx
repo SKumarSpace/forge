@@ -1,6 +1,4 @@
-import React from 'react';
-
-import { MonitorOutlined, PhoneIphoneOutlined } from '@mui/icons-material';
+import { MonitorOutlined, PhoneIphoneOutlined, MarkChatUnread } from '@mui/icons-material';
 import { Box, Stack, SxProps, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
 import { Reader } from '@usewaypoint/email-builder';
 
@@ -22,56 +20,45 @@ import MainTabsGroup from './MainTabsGroup';
 import ShareButton from './ShareButton';
 import SaveToDisk from './SaveToDisk';
 import DeleteFromDisk from './DeleteFromDisk';
+import Message from './Message';
+
+const SCREEN_SIZE_COMPONENTS: Record<string, JSX.Element | null> = {
+  desktop: null,
+  mobile: null,
+  message: <Message />,
+};
 
 export default function TemplatePanel() {
   const document = useDocument();
   const selectedMainTab = useSelectedMainTab();
   const selectedScreenSize = useSelectedScreenSize();
 
-  let mainBoxSx: SxProps = {
-    height: '100%',
+  const baseBoxStyle: SxProps = {
+    margin: selectedScreenSize !== 'desktop' ? '32px auto' : undefined,
+    width: selectedScreenSize !== 'desktop' ? 370 : 'auto',
+    height: selectedScreenSize !== 'desktop' ? 800 : '100%',
+    boxShadow: selectedScreenSize !== 'desktop'
+      ? 'rgba(33, 36, 67, 0.04) 0px 10px 20px, rgba(33, 36, 67, 0.04) 0px 2px 6px, rgba(33, 36, 67, 0.04) 0px 0px 1px'
+      : undefined,
   };
-  if (selectedScreenSize === 'mobile') {
-    mainBoxSx = {
-      ...mainBoxSx,
-      margin: '32px auto',
-      width: 370,
-      height: 800,
-      boxShadow:
-        'rgba(33, 36, 67, 0.04) 0px 10px 20px, rgba(33, 36, 67, 0.04) 0px 2px 6px, rgba(33, 36, 67, 0.04) 0px 0px 1px',
-    };
-  }
 
-  const handleScreenSizeChange = (_: unknown, value: unknown) => {
-    switch (value) {
-      case 'mobile':
-      case 'desktop':
-        setSelectedScreenSize(value);
-        return;
-      default:
-        setSelectedScreenSize('desktop');
-    }
+  const handleScreenSizeChange = (_: unknown, value: 'desktop' | 'mobile' | 'message' | null) => {
+    setSelectedScreenSize(value ?? 'desktop');
   };
 
   const renderMainPanel = () => {
-    switch (selectedMainTab) {
-      case 'editor':
-        return (
-          <Box sx={mainBoxSx}>
-            <EditorBlock id="root" />
-          </Box>
-        );
-      case 'preview':
-        return (
-          <Box sx={mainBoxSx}>
-            <Reader document={document} rootBlockId="root" />
-          </Box>
-        );
-      case 'html':
-        return <HtmlPanel />;
-      case 'json':
-        return <JsonPanel />;
+    if (SCREEN_SIZE_COMPONENTS[selectedScreenSize]) {
+      return <Box sx={baseBoxStyle}>{SCREEN_SIZE_COMPONENTS[selectedScreenSize]}</Box>;
     }
+
+    const TABS_COMPONENTS: Record<string, JSX.Element> = {
+      editor: <EditorBlock id="root" />,
+      preview: <Reader document={document} rootBlockId="root" />,
+      html: <HtmlPanel />,
+      json: <JsonPanel />,
+    };
+
+    return <Box sx={baseBoxStyle}>{TABS_COMPONENTS[selectedMainTab]}</Box>;
   };
 
   return (
@@ -110,6 +97,11 @@ export default function TemplatePanel() {
               <ToggleButton value="mobile">
                 <Tooltip title="Mobile view">
                   <PhoneIphoneOutlined fontSize="small" />
+                </Tooltip>
+              </ToggleButton>
+              <ToggleButton value="message">
+                <Tooltip title="Message view">
+                  <MarkChatUnread fontSize="small" />
                 </Tooltip>
               </ToggleButton>
             </ToggleButtonGroup>
