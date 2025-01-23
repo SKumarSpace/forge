@@ -39,10 +39,6 @@ export default function SaveToDisk() {
   const { mutate: save } = useMutation({
 
     mutationFn: async () => {
-      // TODO: check if id exists in json...
-      //const id = generateId();
-      console.log('Saving: ', id);
-
       const response = await api.post('save', {
         json: {
           filename: id,
@@ -64,6 +60,9 @@ export default function SaveToDisk() {
       const filename = id + '.json';
       window.location.hash = '#template?name=' + filename;
       queryClient.invalidateQueries({ queryKey: ['templates'] });
+
+      const hackedTogetherFilename = `#template?name=${filename}`;
+      queryClient.invalidateQueries({ queryKey: ['templateContent', hackedTogetherFilename] });
     }
   });
 
