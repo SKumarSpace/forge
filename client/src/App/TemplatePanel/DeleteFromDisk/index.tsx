@@ -5,13 +5,9 @@ import { IconButton, Tooltip } from '@mui/material';
 
 import { setDocument, useDocument } from '../../../documents/editor/EditorContext';
 import { api } from '../../utils';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNanoid } from '../../SamplesDrawer/hooks';
+import { useMutation } from '@tanstack/react-query';
 
 export default function DeleteFromDisk() {
-  const queryClient = useQueryClient();
-  const generateId = useNanoid();
-
   const doc = useDocument();
   const block = doc?.root;
 
@@ -29,9 +25,9 @@ export default function DeleteFromDisk() {
 
   useEffect(() => {
     if (!id) {
-      setDocument({ root: { type, data: { ...data, id: generateId() } } });
+      setDocument({ root: { type, data: { ...data } } });
     }
-  }, [id, data, type, generateId]);
+  }, [id, type]);
 
   const { mutate: deleteFromDisk } = useMutation({
     mutationFn: async () => {

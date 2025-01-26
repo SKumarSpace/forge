@@ -10,7 +10,6 @@ import BaseSidebarPanel from './helpers/BaseSidebarPanel';
 import ColorInput, { NullableColorInput } from './helpers/inputs/ColorInput';
 import { NullableFontFamily } from './helpers/inputs/FontFamily';
 import SliderInput from './helpers/inputs/SliderInput';
-import TextInput from './helpers/inputs/TextInput';
 import ControlledTextInput from './helpers/inputs/ControlledTextInput';
 
 type EmailLayoutSidebarFieldsProps = {
@@ -74,10 +73,10 @@ export default function EmailLayoutSidebarFields({ data, setData }: EmailLayoutS
         defaultValue={data.textColor ?? '#262626'}
         onChange={(textColor) => updateData({ ...data, textColor })}
       />
-      <TextInput
+      <ControlledTextInput
         label="Text/Push Content"
         rows={5}
-        defaultValue={data.smsContent ?? ''}
+        value={data.smsContent ?? ''}
         onChange={(smsContent) => updateData({ ...data, smsContent })}
       />
     </BaseSidebarPanel>
