@@ -1,4 +1,6 @@
-import { InputProps, TextField } from '@mui/material';
+import { InputProps } from '@mui/material';
+import { TextField } from '@adobe/react-spectrum'
+
 
 type Props = {
   label: string;
@@ -10,22 +12,19 @@ type Props = {
   value: string;
 };
 export default function ControlledTextInput({ helperText, label, placeholder, rows, InputProps, value, onChange }: Props) {
-  const isMultiline = typeof rows === 'number' && rows > 1;
   return (
     <TextField
-      fullWidth
-      multiline={isMultiline}
-      minRows={rows}
-      variant={isMultiline ? 'outlined' : 'standard'}
+      isQuiet
+      width={'100%'}
+      // fullWidth
+      // multiline={isMultiline}
+      // minRows={rows}
+      // variant={isMultiline ? 'outlined' : 'standard'}
       label={label}
       placeholder={placeholder}
-      helperText={helperText}
-      InputProps={InputProps}
+      // helperText={helperText}
       value={value}
-      onChange={(ev) => {
-        const v = ev.target.value;
-        onChange(v);
-      }}
+      onChange={onChange}
     />
   );
 }

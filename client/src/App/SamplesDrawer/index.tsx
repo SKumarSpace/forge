@@ -1,5 +1,4 @@
-import { Box, Button, Divider, Drawer, Link, Stack, Typography } from '@mui/material';
-
+import { Divider, Flex, Heading, Link, View, Text } from '@adobe/react-spectrum';
 import { useSamplesDrawerOpen } from '../../documents/editor/EditorContext';
 
 import SidebarButton from './SidebarButton';
@@ -13,26 +12,27 @@ export default function SamplesDrawer() {
   const templates = useTemplateStore();
 
   return (
-    <Drawer
-      variant="persistent"
-      anchor="left"
-      open={samplesDrawerOpen}
-      sx={{
-        width: samplesDrawerOpen ? SAMPLES_DRAWER_WIDTH : 0,
+    <Flex
+      UNSAFE_style={{
+        transition: 'width 0.3s ease',
+        width: samplesDrawerOpen ? `${SAMPLES_DRAWER_WIDTH}px` : '0',
+        overflow: samplesDrawerOpen ? 'visible' : 'hidden',
+        padding: samplesDrawerOpen ? '6px 24px' : 0,
+        backgroundColor: 'gray-50',
       }}
     >
-      <Stack spacing={3} py={1} px={2} width={SAMPLES_DRAWER_WIDTH} justifyContent="space-between" height="100%">
-        <Stack spacing={2} sx={{ '& .MuiButtonBase-root': { width: '100%', justifyContent: 'flex-start' } }}>
-          <Typography variant="h6" component="h1" sx={{ p: 0.75 }} style={{ display: 'flex', alignItems: 'center' }}>
+      <Flex direction="column" width={`${SAMPLES_DRAWER_WIDTH}px`} height="100%" justifyContent='space-between' >
+        <Flex direction="column" gap="size-200">
+          <Heading level={3} marginStart="size-100" UNSAFE_style={{ display: 'flex', alignItems: 'center' }}>
             <LibraryIcon size={24} />
-            <span style={{ marginLeft: '0.25rem' }}>Forge</span>
-          </Typography>
+            <Text marginStart="size-100">Forge</Text>
+          </Heading>
 
-          <Stack alignItems="flex-start">
-            <div
-              style={{
+          <Flex direction='column' alignItems='self-start'>
+            <Text
+              UNSAFE_style={{
                 fontSize: '0.75rem',
-                color: 'rgba(0, 0, 0, 0.54)',
+                color: 'var(--spectrum-global-color-gray-500)',
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
                 letterSpacing: '0.5em',
@@ -41,7 +41,7 @@ export default function SamplesDrawer() {
               }}
             >
               Samples
-            </div>
+            </Text>
             <SidebarButton href="#">Empty</SidebarButton>
             <SidebarButton href="#sample/welcome">Welcome email</SidebarButton>
             <SidebarButton href="#sample/one-time-password">One-time passcode (OTP)</SidebarButton>
@@ -51,13 +51,13 @@ export default function SamplesDrawer() {
             <SidebarButton href="#sample/reservation-reminder">Reservation reminder</SidebarButton>
             <SidebarButton href="#sample/post-metrics-report">Post metrics</SidebarButton>
             <SidebarButton href="#sample/respond-to-message">Respond to inquiry</SidebarButton>
-          </Stack>
-          <Divider />
-          <Stack alignItems="flex-start">
-            <div
-              style={{
+          </Flex>
+          <Divider size="S" />
+          <Flex direction='column' alignItems='self-start'>
+            <Text
+              UNSAFE_style={{
                 fontSize: '0.75rem',
-                color: 'rgba(0, 0, 0, 0.54)',
+                color: 'var(--spectrum-global-color-gray-500)',
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
                 letterSpacing: '0.5em',
@@ -66,43 +66,48 @@ export default function SamplesDrawer() {
               }}
             >
               Templates
-            </div>
+            </Text>
             {templates &&
               Object.entries(templates).map(([id, title]) => (
                 <SidebarButton key={id} href={`#template?name=${id}`}>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  {title}
-                  <span style={{ fontSize: '0.5rem'}}>{id.replace('.json', '')}</span>
-                  </div>
+                  <Flex direction="column">
+                    <Text>{title}</Text>
+                    <Text UNSAFE_style={{ fontSize: '0.5rem' }}>{id.replace('.json', '')}</Text>
+                  </Flex>
                 </SidebarButton>
               ))}
-          </Stack>
-          <Divider />
-        </Stack>
-        <Stack spacing={2} px={0.75} py={3}>
-          <Link href="https://usewaypoint.com?utm_source=emailbuilderjs" target="_blank" sx={{ lineHeight: 1 }}>
-            <Box component="img" src={logo} width={32} />
-          </Link>
-          <Box>
-            <Typography variant="overline" gutterBottom>
-              Looking to send emails?
-            </Typography>
-            <Typography variant="body2" color="text.secondary" paragraph>
-              Waypoint is an end-to-end email API with a &apos;pro&apos; version of this template builder with dynamic
-              variables, loops, conditionals, drag and drop, layouts, and more.
-            </Typography>
-          </Box>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ justifyContent: 'center' }}
+          </Flex>
+          <Divider size="S" />
+        </Flex>
+        <Flex direction="column" gap="size-200" alignItems="start" UNSAFE_style={{ padding: '24px 6px' }}>
+          <Link
+            isQuiet
             href="https://usewaypoint.com?utm_source=emailbuilderjs"
             target="_blank"
           >
-            Learn more
-          </Button>
-        </Stack>
-      </Stack>
-    </Drawer>
+            <View width="size-400">
+              <img src={logo} alt="Waypoint logo" style={{ width: '100%' }} />
+            </View>
+          </Link>
+          <View>
+            <Heading level={4} UNSAFE_style={{ marginTop: 0 }}>Looking to send emails?</Heading>
+            <Text>
+              Waypoint is an end-to-end email API with a &apos;pro&apos; version of this template builder with dynamic
+              variables, loops, conditionals, drag and drop, layouts, and more.
+            </Text>
+          </View>
+          <View UNSAFE_style={{ width: '100%', padding: '8px 12px', textAlign: 'center', textDecorationLine: 'none', background: '#1F1F21' }}>
+            <Link
+              variant="overBackground"
+              href="https://usewaypoint.com?utm_source=emailbuilderjs"
+              target="_blank"
+              width={'100%'}
+            >
+              Learn more
+            </Link>
+          </View>
+        </Flex>
+      </Flex>
+    </Flex>
   );
 }

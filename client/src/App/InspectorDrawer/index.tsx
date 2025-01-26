@@ -1,7 +1,4 @@
-import React from 'react';
-
-import { Box, Drawer, Tab, Tabs } from '@mui/material';
-
+import { Item, TabList, Tabs, View } from '@adobe/react-spectrum'
 import { setSidebarTab, useInspectorDrawerOpen, useSelectedSidebarTab } from '../../documents/editor/EditorContext';
 
 import ConfigurationPanel from './ConfigurationPanel';
@@ -23,25 +20,25 @@ export default function InspectorDrawer() {
   };
 
   return (
-    <Drawer
-      variant="persistent"
-      anchor="right"
-      open={inspectorDrawerOpen}
-      sx={{
+    <View
+      UNSAFE_style={{
         width: inspectorDrawerOpen ? INSPECTOR_DRAWER_WIDTH : 0,
+        transition: 'width 0.3s ease',
       }}
     >
-      <Box sx={{ width: INSPECTOR_DRAWER_WIDTH, height: 49, borderBottom: 1, borderColor: 'divider' }}>
-        <Box px={2}>
-          <Tabs value={selectedSidebarTab} onChange={(_, v) => setSidebarTab(v)}>
-            <Tab value="styles" label="Styles" />
-            <Tab value="block-configuration" label="Inspect" />
+      <View UNSAFE_style={{ width: INSPECTOR_DRAWER_WIDTH, height: 49, borderBottom: 1, borderColor: 'divider' }}>
+        <View UNSAFE_style={{ padding: '0 16px' }}>
+          <Tabs onSelectionChange={setSidebarTab as any}>
+            <TabList>
+              <Item key="styles">Styles</Item>
+              <Item key="block-configuration">Inspect</Item>
+            </TabList>
           </Tabs>
-        </Box>
-      </Box>
-      <Box sx={{ width: INSPECTOR_DRAWER_WIDTH, height: 'calc(100% - 49px)', overflow: 'auto' }}>
+        </View>
+      </View>
+      <View UNSAFE_style={{ width: INSPECTOR_DRAWER_WIDTH, height: 'calc(100% - 49px)', overflow: 'auto' }}>
         {renderCurrentSidebarPanel()}
-      </Box>
-    </Drawer>
+      </View>
+    </View>
   );
 }

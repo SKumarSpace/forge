@@ -1,17 +1,14 @@
-import { Stack, useTheme } from '@mui/material';
-
+import { Flex, View } from '@adobe/react-spectrum';
 import { useInspectorDrawerOpen, useSamplesDrawerOpen } from '../documents/editor/EditorContext';
 
-import InspectorDrawer, { INSPECTOR_DRAWER_WIDTH } from './InspectorDrawer';
-import SamplesDrawer, { SAMPLES_DRAWER_WIDTH } from './SamplesDrawer';
+import InspectorDrawer from './InspectorDrawer';
+import SamplesDrawer from './SamplesDrawer';
 import TemplatePanel from './TemplatePanel';
 
-function useDrawerTransition(cssProperty: 'margin-left' | 'margin-right', open: boolean) {
-  const { transitions } = useTheme();
-  return transitions.create(cssProperty, {
-    easing: !open ? transitions.easing.sharp : transitions.easing.easeOut,
-    duration: !open ? transitions.duration.leavingScreen : transitions.duration.enteringScreen,
-  });
+function useDrawerTransition(cssProperty: string, open: boolean) {
+  const easing = open ? 'ease-out' : 'ease-in';
+  const duration = open ? '300ms' : '200ms';
+  return `${cssProperty} ${duration} ${easing}`;
 }
 
 export default function App() {
@@ -22,19 +19,19 @@ export default function App() {
   const marginRightTransition = useDrawerTransition('margin-right', inspectorDrawerOpen);
 
   return (
-    <>
-      <InspectorDrawer />
+    <Flex>
       <SamplesDrawer />
 
-      <Stack
-        sx={{
-          marginRight: inspectorDrawerOpen ? `${INSPECTOR_DRAWER_WIDTH}px` : 0,
-          marginLeft: samplesDrawerOpen ? `${SAMPLES_DRAWER_WIDTH}px` : 0,
+      <View
+        UNSAFE_style={{
+          width: '100%',
           transition: [marginLeftTransition, marginRightTransition].join(', '),
         }}
       >
         <TemplatePanel />
-      </Stack>
-    </>
+      </View>
+
+      <InspectorDrawer />
+    </Flex>
   );
 }
