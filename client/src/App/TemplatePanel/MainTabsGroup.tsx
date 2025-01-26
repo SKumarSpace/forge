@@ -1,19 +1,22 @@
 import React from 'react';
-
-import { CodeOutlined, DataObjectOutlined, EditOutlined, PreviewOutlined } from '@mui/icons-material';
-import { Tab, Tabs, Tooltip } from '@mui/material';
+import { Tabs, TabList, Item, TooltipTrigger, Tooltip } from '@adobe/react-spectrum';
+import Edit from '@spectrum-icons/workflow/Edit';
+import Preview from '@spectrum-icons/workflow/Preview';
+import Code from '@spectrum-icons/workflow/Code';
+import Data from '@spectrum-icons/workflow/Data';
 
 import { setSelectedMainTab, useSelectedMainTab } from '../../documents/editor/EditorContext';
 
 export default function MainTabsGroup() {
   const selectedMainTab = useSelectedMainTab();
-  const handleChange = (_: unknown, v: unknown) => {
-    switch (v) {
+
+  const handleChange = (key: React.Key) => {
+    switch (key) {
       case 'json':
       case 'preview':
       case 'editor':
       case 'html':
-        setSelectedMainTab(v);
+        setSelectedMainTab(key as 'html');
         return;
       default:
         setSelectedMainTab('editor');
@@ -21,39 +24,45 @@ export default function MainTabsGroup() {
   };
 
   return (
-    <Tabs value={selectedMainTab} onChange={handleChange}>
-      <Tab
-        value="editor"
-        label={
-          <Tooltip title="Edit">
-            <EditOutlined fontSize="small" />
-          </Tooltip>
-        }
-      />
-      <Tab
-        value="preview"
-        label={
-          <Tooltip title="Preview">
-            <PreviewOutlined fontSize="small" />
-          </Tooltip>
-        }
-      />
-      <Tab
-        value="html"
-        label={
-          <Tooltip title="HTML output">
-            <CodeOutlined fontSize="small" />
-          </Tooltip>
-        }
-      />
-      <Tab
-        value="json"
-        label={
-          <Tooltip title="JSON output">
-            <DataObjectOutlined fontSize="small" />
-          </Tooltip>
-        }
-      />
+    <Tabs
+      aria-label="Main Tabs"
+      selectedKey={selectedMainTab}
+      onSelectionChange={handleChange}
+    >
+      <TabList>
+        <Item key="editor">
+          <TooltipTrigger>
+            <span>
+              <Edit />
+            </span>
+            <Tooltip>Edit</Tooltip>
+          </TooltipTrigger>
+        </Item>
+        <Item key="preview">
+          <TooltipTrigger>
+            <span>
+              <Preview />
+            </span>
+            <Tooltip>Preview</Tooltip>
+          </TooltipTrigger>
+        </Item>
+        <Item key="html">
+          <TooltipTrigger>
+            <span>
+              <Code />
+            </span>
+            <Tooltip>HTML Output</Tooltip>
+          </TooltipTrigger>
+        </Item>
+        <Item key="json">
+          <TooltipTrigger>
+            <span>
+              <Data />
+            </span>
+            <Tooltip>JSON Output</Tooltip>
+          </TooltipTrigger>
+        </Item>
+      </TabList>
     </Tabs>
   );
 }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { AspectRatioOutlined } from '@mui/icons-material';
 import { ToggleButton } from '@mui/material';
+// import { ToggleButton } from '@adobe/react-spectrum';
 import { AvatarProps, AvatarPropsDefaults, AvatarPropsSchema } from '@usewaypoint/block-avatar';
 
 import BaseSidebarPanel from './helpers/BaseSidebarPanel';
