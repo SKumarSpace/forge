@@ -151,6 +151,41 @@ func HostServer(port string, directory string, imageUrl, proxyAddr string) error
 		w.Write([]byte("File saved successfully"))
 	})
 
+	// Define the delete handler
+	mux.HandleFunc("DELETE /delete", func(w http.ResponseWriter, r *http.Request) {
+		d := json.NewDecoder(r.Body)
+		d.DisallowUnknownFields()
+
+		// Define a struct for the incoming JSON
+		t := struct {
+			Filename string `json:"filename"`
+		}{}
+
+		err := d.Decode(&t)
+		if err != nil {
+			// Handle bad JSON or unrecognized fields
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		// Delete the HTML file from Blob storage
+		err = bucket.Delete(r.Context(), t.Filename+".html")
+		if err != nil {
+			http.Error(w, "Error deleting HTML file", http.StatusInternalServerError)
+			return
+		}
+
+		// Delete the JSON configuration file from Blob storage
+		err = bucket.Delete(r.Context(), t.Filename+".json")
+		if err != nil {
+			http.Error(w, "Error deleting configuration file", http.StatusInternalServerError)
+			return
+		}
+
+		// Respond to the client
+		w.Write([]byte("File deleted successfully"))
+	})
+
 	// Define the list handler
 	mux.HandleFunc("GET /list", func(w http.ResponseWriter, r *http.Request) {
 		// List all the files in the bucket
